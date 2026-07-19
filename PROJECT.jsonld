@@ -1,0 +1,131 @@
+{
+  "@context": [
+    "https://schema.org/",
+    {
+      "etzhayyim": "https://etzhayyim.com/schemas/",
+      "capabilities": "etzhayyim:capabilities",
+      "survivalIndicators": "etzhayyim:survivalIndicators",
+      "scheduler": "etzhayyim:scheduler",
+      "milestones": "etzhayyim:milestones",
+      "blockers": "etzhayyim:blockers",
+      "dependsOn": {
+        "@id": "etzhayyim:dependsOn",
+        "@type": "@id"
+      },
+      "ingestKey": "etzhayyim:ingestKey",
+      "window": "etzhayyim:window",
+      "valueUpdatedAt": "etzhayyim:valueUpdatedAt"
+    }
+  ],
+  "@type": "Project",
+  "identifier": "etzhayyim-project-intel",
+  "name": "etzhayyim project intel",
+  "status": "DesignComplete",
+  "description": "Multi-INT fusion SpinApp for lawful collection, normalization, correlation, and query across OSINT, HUMINT, SIGINT, GEOINT, MASINT, cyber, economic, technical, and behavioral intelligence families.",
+  "capabilities": {
+    "@type": "DefinedTermSet",
+    "name": "Capabilities",
+    "description": "Summary of the capabilities this project is responsible for (CV-1).",
+    "terms": [
+      {
+        "@type": "DefinedTerm",
+        "name": "Multi-INT Collection",
+        "description": "Collect observations from public, human, signal, geospatial, cyber, economic, and scientific source families through lawful connectors."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Evidence Normalization",
+        "description": "Normalize heterogeneous source payloads into common observation, entity, and link projections."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Fusion Scoring",
+        "description": "Score hypotheses and event probabilities by weighting cross-INT evidence."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Case and Alert Query",
+        "description": "Expose typed query APIs for cases, observations, graphs, alerts, and source coverage."
+      }
+    ]
+  },
+  "survivalIndicators": [
+    {
+      "@type": "PropertyValue",
+      "identifier": "requests",
+      "name": "Requests",
+      "description": "Request count (traffic) as a basic survival indicator.",
+      "unitText": "count",
+      "value": null,
+      "ingestKey": "requests",
+      "window": "1d",
+      "valueUpdatedAt": null
+    },
+    {
+      "@type": "PropertyValue",
+      "identifier": "gccCredit",
+      "name": "GCC Credit",
+      "description": "GCC credit balance (or net credit change) as a basic survival indicator.",
+      "unitText": "GCC",
+      "value": null,
+      "ingestKey": "gccCredit",
+      "window": "1d",
+      "valueUpdatedAt": null
+    }
+  ],
+  "scheduler": "scheduler.jsonld",
+  "rdfUnifiedDocuments": {
+    "@type": "Dataset",
+    "name": "Unified top-level RDF/JSON-LD documents",
+    "description": "Consolidated from project top-level *.jsonld files except PROJECT.jsonld.",
+    "documents": [
+      {
+        "fileName": "scheduler.jsonld",
+        "content": {
+          "@context": [
+            "https://schema.org/",
+            {
+              "etzhayyim": "https://etzhayyim.com/schemas/",
+              "capabilities": "etzhayyim:capabilities",
+              "survivalIndicators": "etzhayyim:survivalIndicators",
+              "scheduler": "etzhayyim:scheduler",
+              "milestones": "etzhayyim:milestones",
+              "blockers": "etzhayyim:blockers",
+              "dependsOn": {
+                "@id": "etzhayyim:dependsOn",
+                "@type": "@id"
+              },
+              "ingestKey": "etzhayyim:ingestKey",
+              "window": "etzhayyim:window",
+              "valueUpdatedAt": "etzhayyim:valueUpdatedAt"
+            }
+          ],
+          "@type": "CreativeWork",
+          "name": "etzhayyim project intel Scheduler",
+          "identifier": "etzhayyim-project-intel/scheduler",
+          "description": "Project schedule (milestones) and blockers.",
+          "dateCreated": "2026-02-15T04:25:26+00:00",
+          "milestones": [
+            {
+              "@type": "DefinedTerm",
+              "name": "SpinApp design complete",
+              "description": "Taxonomy, command/query split, data model, and component topology documented.",
+              "dateCreated": "2026-03-12T00:00:00Z"
+            },
+            {
+              "@type": "DefinedTerm",
+              "name": "Scaffold initial SpinApp",
+              "description": "Create wasm app folder, spin.toml, and k8s/spinapp.yaml for intel gateway/query/ui surfaces."
+            },
+            {
+              "@type": "DefinedTerm",
+              "name": "Define public contracts",
+              "description": "Add WIT and Connect gRPC proto for IntelQueryService and internal workflow operations."
+            }
+          ],
+          "blockers": []
+        }
+      }
+    ]
+  }
+}

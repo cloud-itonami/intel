@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/etzhayyim/etzhayyim-intel
+	branch = main
+	commit = 8e921c2115c0a73f6fcf70fd018ba182d901f3ed
+	parent = b0e19086a7099bdffcb8c3d40441953b5b7691b1
+	method = merge
+	cmdver = 0.4.9

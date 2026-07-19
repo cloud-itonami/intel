@@ -1,0 +1,109 @@
+{
+  "@context": "https://etzhayyim.com/ns/kotodama/v1",
+  "@id": "did:web:intel.etzhayyim.com",
+  "component": {
+    "path": "component.wasm"
+  },
+  "convoSystemPrompt": "You are intel agent. Intel — AI Agent for multi-INT fusion intelligence analysis (30 INT disciplines). Respond helpfully in the users language.",
+  "duties": [
+    "勤労の義務"
+  ],
+  "governance": {
+    "raci": "responsible",
+    "classification": "internal",
+    "complianceFrameworks": [
+      "intel-policy"
+    ]
+  },
+  "interfaces": {
+    "package": "etzhayyim:intel@0.1.0"
+  },
+  "kpi": [
+    "credits の獲得"
+  ],
+  "name": "intel",
+  "nanoid": "i7n73l0x",
+  "performerType": "service",
+  "pool": {},
+  "profile": {
+    "agentType": "autonomous",
+    "capabilities": [
+      "multi-int-fusion",
+      "entity-intelligence"
+    ],
+    "description": "Intel — AI Agent for multi-INT fusion intelligence analysis (30 INT disciplines)",
+    "displayName": "Intel",
+    "isBot": true,
+    "operator": "etzhayyim.com"
+  },
+  "project": "intel",
+  "runtimeType": "worker",
+  "space": {
+    "channels": [
+      {
+        "default": true,
+        "kind": "public",
+        "name": "i7n73l0x-feed"
+      }
+    ],
+    "joinRule": "public",
+    "name": "Intel"
+  },
+  "triggers": {
+    "http": {
+      "listen": "0.0.0.0:8080",
+      "routes": [
+        "/api/grpc/etzhayyim.intel.v1.IntelService/...",
+        "/health",
+        "/healthz",
+        "/readyz",
+        "/..."
+      ],
+      "spa": true,
+      "staticDir": "/wasm/svelte/dist"
+    },
+    "subscribeRepos": {
+      "collections": [
+        "app.bsky.feed.post",
+        "app.bsky.feed.like",
+        "app.bsky.feed.repost",
+        "app.bsky.graph.follow",
+        "com.etzhayyim.apps.intel.report",
+        "com.etzhayyim.apps.intel.source",
+        "com.etzhayyim.apps.intel.indicator",
+        "com.etzhayyim.apps.intel.feedObservation",
+        "com.etzhayyim.apps.intel.peerObservation",
+        "com.etzhayyim.apps.intel.engagementEvent",
+        "com.etzhayyim.apps.intel.entityDid",
+        "com.etzhayyim.apps.intel.inferredCohort",
+        "com.etzhayyim.apps.intel.inferenceChain",
+        "com.etzhayyim.apps.intel.inferenceEvidence",
+        "com.etzhayyim.apps.handotai.article",
+        "com.etzhayyim.apps.handotai.company",
+        "com.etzhayyim.apps.handotai.product",
+        "com.etzhayyim.apps.kuruma.article",
+        "com.etzhayyim.apps.kuruma.company",
+        "com.etzhayyim.apps.kuruma.product",
+        "com.etzhayyim.apps.malak.threatActor",
+        "com.etzhayyim.apps.malak.intelReport",
+        "com.etzhayyim.apps.malak.osintFinding",
+        "com.etzhayyim.apps.malak.emailMessage",
+        "com.etzhayyim.apps.yabai.entity",
+        "com.etzhayyim.apps.yabai.alert",
+        "com.etzhayyim.apps.yabai.risk",
+        "com.etzhayyim.apps.ctUmonitor.ct_alert",
+        "com.etzhayyim.apps.ctUmonitor.bgp_alert",
+        "com.etzhayyim.apps.ctUmonitor.kev_entry",
+        "com.etzhayyim.apps.ipaddress.ipAddress",
+        "com.etzhayyim.apps.ipaddress.ipAnalysis",
+        "com.etzhayyim.apps.naturalPerson.cohortPerson",
+        "com.etzhayyim.apps.naturalPerson.identifiedPerson"
+      ]
+    }
+  },
+  "uiType": "appview",
+  "yata": {
+    "dataDir": "/data/yata",
+    "graphUri": "/data/graph"
+  }
+}
