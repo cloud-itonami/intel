@@ -1,0 +1,302 @@
+{
+  "@context": "https://etzhayyim.com/ns/actor/v1",
+  "@id": "did:web:intel.etzhayyim.com",
+  "capabilities": [
+    "graph.query",
+    "graph.write",
+    "graph.vectorSearch",
+    "agent.chat",
+    "agent.invoke",
+    "bpmn.dispatch",
+    "browser.fetch",
+    "derive:social"
+  ],
+  "complianceDocs": [
+    "90-docs/rules/compliance/per-did-kyumei-shinka-autonomy.md",
+    "90-docs/platform/260403-live-data-kyumei-shinka-consolidated.md"
+  ],
+  "convoSystemPrompt": "You are the Intel agent — a Multi-INT fusion intelligence platform. You correlate intelligence across 30 disciplines (OSINT, SIGINT, HUMINT, GEOINT, MASINT, CYBINT, FININT, TECHINT, MEDINT, etc.), validate source reliability (A-F scale), assess information confidence (1-6 scale), and produce fused intelligence products. Query the graph for IntelAnalysis, Entity, IntelSource, IntelPending, and IntelAlert nodes. Cross-reference with handotai, yabai, malak, ct-monitor, and ipaddress feeds. Classification: CUI.",
+  "description": "Multi-INT fusion intelligence platform covering 30 INT disciplines (OSINT, SIGINT, HUMINT, GEOINT, MASINT, CYBINT, FININT, etc.). Murakumo LLM analysis, entity graph correlation, cross-source fusion, and priority alerting.",
+  "displayName": "Intel — Multi-INT Fusion Intelligence",
+  "domainKnowledgeRequired": true,
+  "runtime": "k8s-langserver",
+  "edge": "sveltekit-proxy",
+  "legacyExecutionTier": "T1",
+  "governance": {
+    "classification": "cui",
+    "complianceFrameworks": [
+      "ODNI ICD 203",
+      "NIST CSF 2.0"
+    ],
+    "raci": "responsible"
+  },
+  "heartbeatRequired": true,
+  "name": "intel",
+  "nanoid": "i7n73l0x",
+  "performerType": "service",
+  "pipelines": [
+    {
+      "steps": [
+        {
+          "args": {
+            "sql": "MATCH (e:IntelEntity)-[:MENTIONED_IN]->(a:IntelAnalysis) WHERE e.name = $input.record.entityName RETURN a.did AS analysisDid, a.intDiscipline AS discipline, a.confidence AS confidence, a.createdAt AS createdAt ORDER BY a.createdAt DESC LIMIT 10"
+          },
+          "fn": "graph.query",
+          "id": "relatedEntities"
+        },
+        {
+          "args": {
+            "sql": "MATCH (s:IntelSource) WHERE s.did IN $input.record.sourceDids RETURN s.did AS sourceDid, s.reliability AS reliability, s.discipline AS discipline, s.lastValidated AS lastValidated LIMIT 10"
+          },
+          "depends_on": [],
+          "fn": "graph.query",
+          "id": "sources"
+        },
+        {
+          "args": {
+            "message": "New intelligence submission: $input.record\n\nRelated prior analyses:\n$relatedEntities.rows\n\nSource reliability:\n$sources.rows\n\nPerform Multi-INT fusion: validate source reliability (A-F), assess information confidence (1-6), cross-correlate with existing intelligence, identify gaps. Return JSON: {fusedAssessment, reliability, confidence, intDisciplines, entityLinks, gaps, priority: routine|priority|immediate}"
+          },
+          "depends_on": [
+            "relatedEntities",
+            "sources"
+          ],
+          "fn": "agent.chat",
+          "id": "fuse"
+        },
+        {
+          "args": {
+            "template": "MERGE (a:IntelAnalysis {did: $did}) SET a.entityName = $input.record.entityName, a.intDiscipline = $input.record.discipline, a.assessment = $fuse.text, a.confidence = $input.record.confidence, a.classification = 'cui', a.repo = $did, a.collection = 'com.etzhayyim.apps.intel.analysis'"
+          },
+          "fn": "graph.write",
+          "id": "writeAnalysis"
+        },
+        {
+          "args": {
+            "template": "New data added: $fuse.text"
+          },
+          "depends_on": [
+            "fuse"
+          ],
+          "fn": "derive:social",
+          "id": "announce"
+        }
+      ],
+      "trigger": {
+        "nsid": "com.etzhayyim.apps.intel.submitAnalysis",
+        "type": "xrpc"
+      }
+    },
+    {
+      "steps": [
+        {
+          "args": {
+            "template": "MERGE (p:IntelPending {did: $did}) SET p.sourceCollection = $input.collection, p.sourceDid = $input.record.did, p.payload = $input.record, p.status = 'pending', p.repo = $did, p.collection = 'com.etzhayyim.apps.intel.pending'"
+          },
+          "fn": "graph.write",
+          "id": "ingest"
+        },
+        {
+          "args": {
+            "message": "Incoming cross-domain intelligence from $input.collection:\n$input.record\n\nTriage this item: classify INT discipline, assess relevance, extract entities, determine priority (routine/priority/immediate). Return JSON: {discipline, relevance: high|medium|low, entities, priority, actionRequired}"
+          },
+          "depends_on": [],
+          "fn": "agent.chat",
+          "id": "triage"
+        },
+        {
+          "args": {
+            "template": "MERGE (a:IntelAlert {did: $did}) SET a.sourceCollection = $input.collection, a.discipline = $triage.text, a.priority = 'pending', a.repo = $did, a.collection = 'com.etzhayyim.apps.intel.alert'"
+          },
+          "fn": "graph.write",
+          "id": "writeAlert"
+        },
+        {
+          "args": {
+            "template": "New data added: $triage.text"
+          },
+          "depends_on": [
+            "triage"
+          ],
+          "fn": "derive:social",
+          "id": "announce"
+        }
+      ],
+      "trigger": {
+        "collections": [
+          "com.etzhayyim.apps.handotai.article",
+          "com.etzhayyim.apps.malak.incident",
+          "com.etzhayyim.apps.yabai.risk",
+          "com.etzhayyim.apps.ctMonitor.alert",
+          "com.etzhayyim.apps.ipaddress.ipAnalysis"
+        ],
+        "type": "subscribeRepos"
+      }
+    },
+    {
+      "steps": [
+        {
+          "args": {
+            "sql": "MATCH (p:IntelPending) WHERE p.status = 'pending' RETURN count(p) AS pending, collect(DISTINCT p.sourceCollection)[..5] AS sources LIMIT 1"
+          },
+          "fn": "graph.query",
+          "id": "pendingCount"
+        },
+        {
+          "args": {
+            "sql": "MATCH (a:IntelAlert) WHERE a.priority IN ['immediate', 'priority'] RETURN a.did AS alertDid, a.discipline AS discipline, a.priority AS priority, a.sourceCollection AS source LIMIT 15"
+          },
+          "depends_on": [],
+          "fn": "graph.query",
+          "id": "recentAlerts"
+        },
+        {
+          "args": {
+            "message": "Intel fusion briefing.\n\nPending items: $pendingCount.rows\nPriority/immediate alerts:\n$recentAlerts.rows\n\nProduce a concise multi-INT situation report: key threats, emerging patterns, intelligence gaps, and recommended collection priorities."
+          },
+          "depends_on": [
+            "pendingCount",
+            "recentAlerts"
+          ],
+          "fn": "agent.chat",
+          "id": "briefing"
+        },
+        {
+          "args": {
+            "template": "Intel fusion briefing: $briefing.text"
+          },
+          "fn": "derive:social",
+          "id": "announce"
+        }
+      ],
+      "trigger": {
+        "cron": "0 */4 * * *",
+        "type": "cron"
+      }
+    },
+    {
+      "steps": [
+        {
+          "args": {
+            "sql": "MATCH (n) WHERE n.repo = $did RETURN count(n) AS nodeCount, coalesce(max(n._seq), 0) AS latestSeq LIMIT 1"
+          },
+          "fn": "graph.query",
+          "id": "coverageNodes"
+        },
+        {
+          "args": {
+            "sql": "MATCH (n) WHERE n.repo = $did AND n.collection IS NOT NULL RETURN n.collection AS collection, count(n) AS cnt ORDER BY cnt DESC LIMIT 10"
+          },
+          "depends_on": [],
+          "fn": "graph.query",
+          "id": "coverageCollections"
+        },
+        {
+          "args": {
+            "params": {
+              "actorName": "intel",
+              "bucket": "6h",
+              "collection": "com.etzhayyim.apps.intel.coverageSnapshot",
+              "latestSeq": 0,
+              "nanoid": "i7n73l0x",
+              "nodeCount": "$coverageNodes.rows[0].nodeCount"
+            },
+            "template": "MERGE (c:ActorCoverageSnapshot {actorDid: $did, bucket: $bucket, actorName: $actorName, nanoid: $nanoid, nodeCount: $nodeCount, latestTs: $latestTs, repo: $did, collection: $collection, status: 'active'})"
+          },
+          "depends_on": [
+            "coverageNodes"
+          ],
+          "fn": "graph.write",
+          "id": "coverageSnapshot"
+        },
+        {
+          "args": {
+            "message": "You are Intel — Multi-INT Fusion Intelligence. Based on the following new data, write a concise social post (1-2 sentences, informative and specific). Data: $coverageSnapshot.text"
+          },
+          "depends_on": [
+            "coverageSnapshot"
+          ],
+          "fn": "agent.chat",
+          "id": "compose"
+        },
+        {
+          "args": {
+            "template": "$compose.text"
+          },
+          "depends_on": [
+            "compose"
+          ],
+          "fn": "derive:social",
+          "id": "announce"
+        }
+      ],
+      "trigger": {
+        "cron": "0 */6 * * *",
+        "type": "cron"
+      }
+    },
+    {
+      "steps": [
+        {
+          "args": {
+            "sql": "MATCH (c:ActorCoverageSnapshot {actorDid: $did}) RETURN c.nodeCount AS nodeCount, c.latestSeq AS latestSeq, c.topCollections AS topCollections, c._seq AS snapshotSeq LIMIT 1"
+          },
+          "fn": "graph.query",
+          "id": "coverageStats"
+        },
+        {
+          "args": {
+            "sql": "MATCH (c:ActorCoverageSnapshot {actorDid: $did}) RETURN c.nodeCount AS totalNodes LIMIT 1"
+          },
+          "depends_on": [],
+          "fn": "graph.query",
+          "id": "coverageHealth"
+        }
+      ],
+      "trigger": {
+        "nsid": "com.etzhayyim.apps.intel.coverage.get",
+        "type": "xrpc"
+      }
+    }
+  ],
+  "profile": {
+    "agentType": "autonomous",
+    "capabilities": [
+      "multi-int-fusion",
+      "entity-correlation",
+      "threat-assessment",
+      "source-validation",
+      "priority-alerting"
+    ],
+    "description": "30-discipline Multi-INT fusion (OSINT/SIGINT/HUMINT/GEOINT/CYBINT/FININT etc.). Murakumo LLM enrichment, entity graph, cross-source correlation, priority alerting.",
+    "displayName": "Intel — Multi-INT Fusion Intelligence",
+    "isBot": true,
+    "operator": "etzhayyim.co.jp"
+  },
+  "requiredCollections": [
+    "com.etzhayyim.apps.standard.shinkaEvolution",
+    "com.etzhayyim.apps.standard.shinkaKnowledge"
+  ],
+  "requiredLoops": [
+    "shinka",
+    "koji",
+    "kyumei",
+    "domain-knowledge"
+  ],
+  "standardRule": "per-did-kyumei-shinka-autonomy@2026-04-13",
+  "standardStatus": "required",
+  "triggers": {
+    "subscribeRepos": {
+      "collections": [
+        "com.etzhayyim.apps.intel.analysis",
+        "com.etzhayyim.apps.intel.source",
+        "com.etzhayyim.apps.intel.alert",
+        "com.etzhayyim.apps.handotai.article",
+        "com.etzhayyim.apps.malak.incident",
+        "com.etzhayyim.apps.yabai.risk",
+        "com.etzhayyim.apps.ctMonitor.alert",
+        "com.etzhayyim.apps.ipaddress.ipAnalysis"
+      ]
+    }
+  },
+  "uiType": "yoro"
+}
