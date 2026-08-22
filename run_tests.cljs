@@ -1,0 +1,29 @@
+#!/usr/bin/env nbb
+;; run_tests.cljs — intel repo contract の検査。
+;;
+;;   nbb --classpath src:test run_tests.cljs
+;;
+;; kotoba/src/registry.ts は自分の冒頭コメントで CUI の E2E 封緘を宣言し、
+;; 2026-08-03 には DID シェル一式が誤って複製された実退行があるが、2026-08-22
+;; までこの repo にはどちらを検査するものも無かった。E2E 境界 ↔ DID シェル不在 ↔
+;; appview identity ↔ migration 契約の 4 面をここで固定する。
+;; workspace の規則で script host は nbb（.ts / .mjs / .sh の新規作成は禁止）。
+(ns run-tests
+  (:require [clojure.test :as t]
+            [etzhayyim.intel.contract-test]
+            [etzhayyim.intel.repo-test]))
+
+(def green-marker
+  "scripts/maturity-loop/mutations.edn の `:green-marker`。
+  全部緑のときだけ出る —— 出力に現れるかどうかで mutation が噛んだかを判定する
+  ので、緑でないときに印字してはならない。"
+  "intel contract: all green")
+
+(defmethod t/report [:cljs.test/default :end-run-tests] [m]
+  (if (t/successful? m)
+    (println (str "\n" green-marker))
+    (do (println "\nintel contract: FAILED")
+        (js/process.exit 1))))
+
+(t/run-tests 'etzhayyim.intel.contract-test
+             'etzhayyim.intel.repo-test)
