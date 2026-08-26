@@ -60,7 +60,7 @@
         "/..."
       ],
       "spa": true,
-      "staticDir": "/wasm/svelte/dist"
+      "staticDir": "/wasm/cljs/public"
     },
     "subscribeRepos": {
       "collections": [
