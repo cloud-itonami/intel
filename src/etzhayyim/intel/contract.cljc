@@ -37,7 +37,7 @@
 
    ここでは規則を純粋関数として書き、fixture で「規則が実際に落ちる」ことを
    見せてから実ファイルに当てる。"
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- v [rule detail] {:rule rule :detail detail})
 

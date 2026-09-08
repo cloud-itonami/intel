@@ -5,7 +5,7 @@
   入力で本当に violation を返すこと』を見る。この向きのテストが無いと、規則の
   実装を骨抜きにしても（:when に false を挟むなど）実物は緑のままなので、
   誰も気づかない —— scripts/maturity-loop の mutation はまさにそこを撃つ。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is testing]]
             [etzhayyim.intel.contract :as c]))
 
