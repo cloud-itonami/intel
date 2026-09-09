@@ -5,7 +5,7 @@
   『実物がその規則を通ること』を見る。E2E 境界（registry.ts 冒頭の宣言）・
   DID シェル不在（2026-08-03 の複製撤去）・appview identity 3 点一致・
   migration 契約を固定する。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is testing]]
             [cljs.reader :as reader]
             [etzhayyim.intel.contract :as c]
