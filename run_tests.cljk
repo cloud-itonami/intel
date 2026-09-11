@@ -1,7 +1,7 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env kbb
 ;; run_tests.cljk — intel repo contract の検査。
 ;;
-;;   nbb --classpath src:test run_tests.cljk
+;;   kbb --backend sci --classpath src:test run_tests.cljk
 ;;
 ;; kotoba/src/registry.ts は自分の冒頭コメントで CUI の E2E 封緘を宣言し、
 ;; 2026-08-03 には DID シェル一式が誤って複製された実退行があるが、2026-08-22
