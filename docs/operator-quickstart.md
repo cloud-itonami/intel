@@ -27,7 +27,7 @@ tracked file は 32 本。README.md / CLAUDE.md が名指しするパスのう�
 
 | 面 | 場所 | 何であるか | 検査 |
 |---|---|---|---|
-| **contract** | `src/etzhayyim/intel/contract.cljc` + `test/` + `run_tests.cljs` | 面と面の *あいだ* の不変条件。純関数（ファイルも network も読まない） | §1 |
+| **contract** | `src/etzhayyim/intel/contract.cljk` + `test/` + `run_tests.cljk` | 面と面の *あいだ* の不変条件。純関数（ファイルも network も読まない） | §1 |
 | **kotoba** | `kotoba/` | E2E reference registry（TypeScript、export 6 関数） | §3 |
 | **appview** | `appview/etzhayyim-wasm-intel-i7n73l0x/` | Worker entry `src/app.ts`（44 KB、command 18 本）+ cljs frontend shell | §4 |
 
@@ -40,7 +40,7 @@ tracked file は 32 本。README.md / CLAUDE.md が名指しするパスのう�
 
 ```bash
 cd orgs/cloud-itonami/intel
-nbb --classpath src:test run_tests.cljs
+nbb --classpath src:test run_tests.cljk
 ```
 
 期待する出力の末尾:
@@ -53,7 +53,7 @@ intel contract: all green
 ```
 
 **緑の判定は最終行の marker で行う。** 落ちたときは exit 1 と `intel contract: FAILED` で、
-marker は印字されない（`run_tests.cljs` の `:end-run-tests` 参照）。
+marker は印字されない（`run_tests.cljk` の `:end-run-tests` 参照）。
 
 固定しているのは 4 面で、どれも過去の実退行の形からできている:
 
