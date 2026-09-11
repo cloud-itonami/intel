@@ -40,7 +40,7 @@ tracked file は 32 本。README.md / CLAUDE.md が名指しするパスのう�
 
 ```bash
 cd orgs/cloud-itonami/intel
-nbb --classpath src:test run_tests.cljk
+kbb --backend sci --classpath src:test run_tests.cljk
 ```
 
 期待する出力の末尾:
@@ -75,7 +75,7 @@ mutation gate が答える —— 対象を 1 箇所ずつ壊して、**壊す�
 
 ```bash
 cd ~/github/com-junkawasaki        # superproject root。worktree ではない（下記）
-nbb scripts/maturity-loop/run.cljs --only cloud-itonami/intel
+kbb --backend sci scripts/maturity-loop/run.cljk --only cloud-itonami/intel
 ```
 
 期待:
