@@ -6,7 +6,7 @@
   DID シェル不在（2026-08-03 の複製撤去）・appview identity 3 点一致・
   migration 契約を固定する。"
   (:require [kotoba.lang.text :as str]
-            [clojure.test :refer [deftest is testing]]
+            [kotoba.test :refer [deftest is testing]]
             [cljs.reader :as reader]
             [etzhayyim.intel.contract :as c]
             ["node:fs" :as fs]

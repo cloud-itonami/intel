@@ -9,7 +9,7 @@
 ;; appview identity ↔ migration 契約の 4 面をここで固定する。
 ;; workspace の規則で script host は nbb（.ts / .mjs / .sh の新規作成は禁止）。
 (ns run-tests
-  (:require [clojure.test :as t]
+  (:require [kotoba.test :as t]
             [etzhayyim.intel.contract-test]
             [etzhayyim.intel.repo-test]))
 
