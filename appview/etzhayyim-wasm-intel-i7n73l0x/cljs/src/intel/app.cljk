@@ -7,7 +7,7 @@
   'Vite entry scaffold after SvelteKit cleanup.') to reagent + re-frame,
   rendered with `jp-go-dds.core` (デジタル庁デザインシステム) hiccup. This is
   still a scaffold, not the multi-INT fusion analysis UI described in the
-  repo's root README / CLAUDE.md — see those for what is and is not
+  repo's root README / AGENTS.md — see those for what is and is not
   implemented here. The XRPC service (`kotoba/src/registry.ts`) and the
   Worker entry (`src/app.ts`) are unaffected by this migration.
 
