@@ -1,7 +1,7 @@
 # operator quickstart — cloud-itonami/intel
 
 **この repo で今日実際に走らせられるものと、走らせられないものを、測った上で並べる。**
-README.md と CLAUDE.md は intel という *系* を説明していて、この repo はその 1 スライスである。
+README.md と AGENTS.md は intel という *系* を説明していて、この repo はその 1 スライスである。
 両者は同じものではない —— 下の §0 がその差を測った結果で、§1 以降が実際に踏める手順。
 
 すべての手順は 2026-09-03 に、この checkout (`3515534e`) に対して実際に実行した。
@@ -12,9 +12,9 @@ README.md と CLAUDE.md は intel という *系* を説明していて、この
 
 ## 0. この repo に在るもの / 在らないもの
 
-tracked file は 32 本。README.md / CLAUDE.md が名指しするパスのうち、**この repo に無いもの**:
+tracked file は 32 本。README.md / AGENTS.md が名指しするパスのうち、**この repo に無いもの**:
 
-| README / CLAUDE.md が名指しするもの | この repo での tracked 数 |
+| README / AGENTS.md が名指しするもの | この repo での tracked 数 |
 |---|---|
 | `/Users/junkawasaki/etzhayyim/etzhayyim-root/…`（絶対パス 3 箇所） | — （repo 外） |
 | `00-contracts/lexicons/` | 0 |
@@ -198,15 +198,15 @@ Ran 4 tests containing 6 assertions.
 **不在を書いておくのは、次に読む者が「無い」を「見ていない」と取り違えないため。**
 
 - **`app.ts` に自動検査が無い**（上記 §0）。
-- **CLAUDE.md の XRPC 表と `app.ts` の登録が一致しない。** CLAUDE.md は 22 メソッド
+- **AGENTS.md の XRPC 表と `app.ts` の登録が一致しない。** AGENTS.md は 22 メソッド
   （16 + Inference 6）を `/xrpc/etzhayyim.intel.v1.IntelService/<PascalCase>` として挙げるが、
   `app.ts` が `.command(nsid(…))` で登録しているのは 18 本で、形は
   `com.etzhayyim.apps.intel.<camelCase>`。突き合わせると:
 
   | | 件数 |
   |---|---|
-  | CLAUDE.md にあって app.ts に無い | 11（`Chat` `GetCapabilities` `GetPublicExport` `ListTools` `PlanCollection` `QueryEntityGraph` `ScheduledScan` `SyncFromCrawler` `TraverseGraph` `GetAnalysisStatus` `GetCollectionPlan`） |
-  | app.ts にあって CLAUDE.md に無い | 7（`audit` `describe` `exportData` `ingest` `searchEntities` `stats` `summarize`） |
+  | AGENTS.md にあって app.ts に無い | 11（`Chat` `GetCapabilities` `GetPublicExport` `ListTools` `PlanCollection` `QueryEntityGraph` `ScheduledScan` `SyncFromCrawler` `TraverseGraph` `GetAnalysisStatus` `GetCollectionPlan`） |
+  | app.ts にあって AGENTS.md に無い | 7（`audit` `describe` `exportData` `ingest` `searchEntities` `stats` `summarize`） |
   | 両方に在る | 11 |
 
   文字列 `IntelService` は **`app.ts` に 1 度も現れない** —— 残っているのは
@@ -218,8 +218,8 @@ Ran 4 tests containing 6 assertions.
   grep -oE '\.command\(nsid\("[^"]+"' appview/*/src/app.ts | sed 's/.*nsid("//' | sort
   ```
 
-- **CLAUDE.md の Known Limitations は 2 件とも未解消。** `kotodama.jsonld` の
+- **AGENTS.md の Known Limitations は 2 件とも未解消。** `kotodama.jsonld` の
   `interfaces.package` は `etzhayyim:intel@0.1.0` のまま（`grep interfaces -A2` で確認できる）。
-- **CLAUDE.md 冒頭は自分を DEPRECATED と宣言している**（actor は
+- **AGENTS.md 冒頭は自分を DEPRECATED と宣言している**（actor は
   `20-actors/intel/actor-manifest.jsonld` へ移行、`app.ts` は T3 fallback）が、その移行先は
   この repo に無い（§0）。移行が済んでいるかどうかはここからは判定できない。

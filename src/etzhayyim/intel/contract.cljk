@@ -32,7 +32,7 @@
 
    3. **appview identity 割れ** —— nanoid `i7n73l0x` は appview のディレクトリ名・
       etzhayyim.json・kotodama.jsonld の 3 箇所に書かれており、どれか 1 つだけ
-      変わる（改名半端）と配備面が別 component を指す。CLAUDE.md の Known
+      変わる（改名半端）と配備面が別 component を指す。AGENTS.md の Known
       Limitations が記録する interfaces.package の drift と同じ入口。
 
    ここでは規則を純粋関数として書き、fixture で「規則が実際に落ちる」ことを
